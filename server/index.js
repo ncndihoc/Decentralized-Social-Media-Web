@@ -10,6 +10,8 @@ import morgan from 'morgan';
 import { fileURLToPath } from 'url';
 import { register } from './controllers/auth.js';
 import authRoutes from './routes/auth.js';
+import { verify } from 'crypto';
+import { verifyToken } from './middleware/auth.js';
 
 /* Config */
 const __filename = fileURLToPath(import.meta.url);
