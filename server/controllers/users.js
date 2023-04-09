@@ -1,33 +1,36 @@
-import User from '../models/User.js';
+import User from "../models/User.js";
 
-/*Read*/
-export const getUsers = async (req, res) => {
+/* READ */
+export const getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    const { password, updatedAt, ...other } = user._doc;
-    res.status(200).json(other);
+    const { id } = req.params;
+    const user = await User.findById(id);
+    res.status(200).json(user);
   } catch (err) {
-    res.status(500).json(err);
+    res.status(404).json({ message: err.message });
   }
-}
+};
 
 export const getUserFriends = async (req, res) => {
   try {
-  const user = await User.findById(req.params.id);
-  const friends = await Promise.all(
-    user.friends.map((id) => User.findById(id))
-  );
-  const formattedFriends = friends.map(({_id, firstName, lastName, occupation, location, picturePath}) => {
-    return {_id, firstName, lastName, occupation, location, picturePath}
-  })
-  res.status(200).json(formattedFriends);
+    const { id } = req.params;
+    const user = await User.findById(id);
+
+    const friends = await Promise.all(
+      user.friends.map((id) => User.findById(id))
+    );
+    const formattedFriends = friends.map(
+      ({ _id, firstName, lastName, occupation, location, picturePath }) => {
+        return { _id, firstName, lastName, occupation, location, picturePath };
+      }
+    );
+    res.status(200).json(formattedFriends);
   } catch (err) {
-    res.status(500).json(err);
+    res.status(404).json({ message: err.message });
   }
-}
+};
 
-/*update*/
-
+/* UPDATE */
 export const addRemoveFriend = async (req, res) => {
   try {
     const { id, friendId } = req.params;
@@ -58,6 +61,3 @@ export const addRemoveFriend = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
-
-
-
